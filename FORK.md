@@ -12,8 +12,8 @@ should shrink back toward upstream over time.
   Shopify's Move (to the beginning, to the end, to a position) works on the
   whole group. It filters the page of products the admin has loaded (100 by
   default, up to 250 with "per page").
-- **Fork releases**: `fork-release.yml` and the `build:manifestGenerated` hook
-  in `wxt.config.ts`, described below.
+- **Fork releases**: `scripts/fork-release.sh` and the
+  `build:manifestGenerated` hook in `wxt.config.ts`, described below.
 
 ## Branches and remotes
 
@@ -31,12 +31,12 @@ git merge upstream/main
 git push origin main
 ```
 
-Fork-only files (this one, `fork-release.yml`) never conflict. Once one of our
-features merges upstream, take upstream's version of its files.
+Fork-only files (this one, `scripts/fork-release.sh`) never conflict. Once one
+of our features merges upstream, take upstream's version of its files.
 
-Upstream's `ci.yml` is disabled in this fork's Actions settings: its deploy and
-Chrome Web Store jobs need uptek's secrets. `fork-release.yml` runs the tests
-instead.
+GitHub Actions are off for this fork. Upstream's `ci.yml` deploys uptek's
+analytics Worker and publishes to the Chrome Web Store with uptek's secrets, so
+leave them off, or disable that workflow if you turn Actions on.
 
 ## Releasing
 
@@ -45,16 +45,15 @@ Releases keep upstream's version and add a fork build number, so
 build number for each release on the same upstream version, and start again at
 1 after merging a new upstream version.
 
+From an up-to-date, clean `main` (needs `bun`, `jq` and a signed-in `gh`):
+
 ```sh
-git checkout main && git pull
-git tag v$(jq -r .version package.json)-gk.1
-git push origin --tags
+scripts/fork-release.sh 1
 ```
 
-The workflow checks the tag matches `package.json`, tests, builds with
-`FORK_BUILD` set, and publishes `alfred-<version>-gk.<n>-chrome.zip` as a
-release on GitHub. To build the same thing locally:
-`FORK_BUILD=1 bunx wxt zip`.
+It tests, builds with `FORK_BUILD` set, tags and pushes `v<version>-gk.<n>`,
+and publishes `alfred-<version>-gk.<n>-chrome.zip` as a GitHub release with
+the install steps below as its notes.
 
 ## Install
 
