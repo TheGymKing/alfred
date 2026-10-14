@@ -61,5 +61,13 @@ export default defineConfig({
       '--disable-features=BlockThirdPartyCookies', // Allows third-party cookies
       'https://theme-dawn-demo.myshopify.com/'
     ]
+  },
+  hooks: {
+    // GymKing fork builds keep upstream's version and label it, so
+    // chrome://extensions shows e.g. 2026.10.10-gk.1 (see FORK.md).
+    'build:manifestGenerated': (_wxt, manifest) => {
+      const build = process.env.FORK_BUILD;
+      if (build) manifest.version_name = `${manifest.version}-gk.${build}`;
+    }
   }
 });
