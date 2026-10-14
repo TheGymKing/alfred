@@ -15,6 +15,7 @@ const VERBS = [
   'sort',
   'filter',
   'search',
+  'select',
   'toggle',
   'expand',
   'collapse',

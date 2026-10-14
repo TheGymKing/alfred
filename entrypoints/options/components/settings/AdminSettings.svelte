@@ -5,7 +5,8 @@
 
   const settingsItems = [
     { key: 'warnBeforeClosingCodeEditor', label: 'Warn before closing code editor', details: 'Show a confirmation dialog before closing the theme code editor page' },
-    { key: 'themeListUtils', label: 'Theme list utilities', details: 'Adds copy buttons for Theme ID and Preview URL to each theme on the themes list page' }
+    { key: 'themeListUtils', label: 'Theme list utilities', details: 'Adds copy buttons for Theme ID and Preview URL to each theme on the themes list page' },
+    { key: 'collectionItemsFilter', label: 'Collection items filter', details: 'Adds a title filter to manually sorted collections, with a button that selects the matches for Move' }
   ];
 
   function handleChange(key: string, e: Event) {

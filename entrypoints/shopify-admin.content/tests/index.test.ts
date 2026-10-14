@@ -18,6 +18,7 @@ Object.assign(g, {
 const storage = await import('~/utils/storage');
 const settings = await import('~/utils/settings');
 const { Toast } = await import('~/utils/toast');
+const collectionFilter = await import('../collection-filter');
 
 const store = new Map<string, unknown>();
 const getItem = spyOn(storage, 'getItem').mockImplementation(async (key: string) => (store.get(key) ?? null) as never);
@@ -26,12 +27,13 @@ const removeItem = spyOn(storage, 'removeItem').mockImplementation(async (key: s
 });
 const getSettings = spyOn(settings, 'getSettings').mockResolvedValue(settings.defaultSettings);
 const show = spyOn(Toast, 'show').mockImplementation(() => {});
+const setupCollectionFilter = spyOn(collectionFilter, 'setupCollectionFilter').mockImplementation(() => {});
 const { default: script } = await import('../index');
 
 const LEGACY_KEY = 'admin-sidebar-state';
 
 afterAll(() => {
-  for (const spy of [getItem, removeItem, getSettings, show]) spy.mockRestore();
+  for (const spy of [getItem, removeItem, getSettings, show, setupCollectionFilter]) spy.mockRestore();
   for (const [k, v] of saved) g[k] = v;
 });
 
@@ -40,6 +42,8 @@ beforeEach(() => {
   listeners.length = 0;
   location.pathname = '/store/demo/products';
   show.mockClear();
+  setupCollectionFilter.mockClear();
+  getSettings.mockResolvedValue(settings.defaultSettings);
 });
 
 describe('sidebar toggle farewell', () => {
@@ -65,5 +69,22 @@ describe('sidebar toggle farewell', () => {
     // The key is cleared before the toast shows, so a failed clear shows nothing.
     expect(show).not.toHaveBeenCalled();
     expect(store.has(LEGACY_KEY)).toBe(true);
+  });
+});
+
+describe('collection items filter', () => {
+  it('sets up with the script context when enabled', async () => {
+    const ctx = {};
+    await script.main(ctx);
+    expect(setupCollectionFilter).toHaveBeenCalledWith(ctx);
+  });
+
+  it('stays off when disabled in settings', async () => {
+    getSettings.mockResolvedValue({
+      ...settings.defaultSettings,
+      admin: { ...settings.defaultSettings.admin, collectionItemsFilter: false }
+    });
+    await script.main({});
+    expect(setupCollectionFilter).not.toHaveBeenCalled();
   });
 });

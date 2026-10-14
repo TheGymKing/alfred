@@ -100,6 +100,8 @@ export const ANALYTICS_ACTIONS = [
   'admin.theme_list.id_copy',
   'admin.theme_editor.panel_resize',
   'admin.theme_editor.inspector_disable',
+  'admin.collection_items.filter',
+  'admin.collection_items.matches_select',
 
   // Dev Dashboard
   'dev.collaborator_access.preset_apply',
@@ -233,6 +235,9 @@ export const TIME_SAVINGS: Record<AnalyticsAction, number | ((metadata?: Record<
   'admin.theme_list.id_copy': 10,
   'admin.theme_editor.panel_resize': 3,
   'admin.theme_editor.inspector_disable': 3,
+  'admin.collection_items.filter': 10,
+  // Each match is one checkbox the merchant didn't have to find and tick.
+  'admin.collection_items.matches_select': (metadata) => 5 * (Number(metadata?.count) || 0),
   'dev.collaborator_access.preset_apply': (metadata) => {
     return 45 + (metadata?.has_custom_message ? 20 : 0);
   },

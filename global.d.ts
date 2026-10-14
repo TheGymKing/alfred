@@ -75,6 +75,7 @@ declare interface AlfredSettings {
   admin?: {
     warnBeforeClosingCodeEditor?: boolean;
     themeListUtils?: boolean;
+    collectionItemsFilter?: boolean;
   };
 }
 
