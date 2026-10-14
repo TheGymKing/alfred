@@ -34,7 +34,7 @@ bun run typecheck
 # `bun run zip` would also open Finder; this is the same build.
 rm -rf .output
 bun run changelog:gen
-FORK_BUILD="$build" bunx wxt zip
+FORK_BUILD="$build" bun x wxt zip
 mv .output/*-chrome.zip ".output/$zip"
 
 git tag -a "$tag" -m "Alfred $name"
